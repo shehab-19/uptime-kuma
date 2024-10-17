@@ -1,0 +1,24 @@
+name: Deploy Frontend with Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t uptime-kuma .
+
+    - name: Push to Docker Hub
+      run: docker push your-dockerhub-user/uptime-kuma
+
+    - name: Deploy to Server
+      run: |
+        ssh user@your-server "docker pull your-dockerhub-user/uptime-kuma && docker stop frontend && docker rm frontend && docker run -d --name frontend -p 3001:3001 your-dockerhub-user/uptime-kuma"
